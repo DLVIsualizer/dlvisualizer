@@ -1,16 +1,17 @@
 
-# expetion #
-!events.out.tfevents.1520570337.DESKTOP-3EADSJ9
-!dnn.ckpt-200.data-00000-of-00001
-!dnn.ckpt-200.index
-!dnn.ckpt-200.meta
 
 .vscode
 *.sw*
-*.ckpt*
+test/model/**
+test/logs/**
 
-events*
 
+# expetion #
+!test/logs/events.out.tfevents.1520570337.DESKTOP-3EADSJ9events
+!test/model/checkpoint
+!test/model/dnn.ckpt-200.data-00000-of-00001
+!test/model/dnn.ckpt-200.index
+!test/model/dnn.ckpt-200.meta
 
 
 # Intellij
