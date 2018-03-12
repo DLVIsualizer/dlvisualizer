@@ -10,9 +10,9 @@ test/logs/**
 !test/logs/events.out.tfevents.1520570337.DESKTOP-3EADSJ9
 !testCNN/logs/events.out.tfevents.1520576549.DESKTOP-3EADSJ9
 !test/model/checkpoint
-!test/model/dnn.ckpt-200.data-00000-of-00001
-!test/model/dnn.ckpt-200.index
-!test/model/dnn.ckpt-200.meta
+!test/model/dnn.ckpt-100.data-00000-of-00001
+!test/model/dnn.ckpt-100.index
+!test/model/dnn.ckpt-100.meta
 
 
 # Intellij

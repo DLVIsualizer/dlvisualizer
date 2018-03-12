@@ -16,17 +16,17 @@ y_data = np.transpose(data[2:])
 ######
 global_step = tf.Variable(0, trainable=False, name='global_step')
 
-X = tf.placeholder(tf.float32)
-Y = tf.placeholder(tf.float32)
+X = tf.placeholder(tf.float32, name='PlaceX')
+Y = tf.placeholder(tf.float32, name='PlaceY')
 
 # with tf.name_scope 으로 묶은 블럭은 텐서보드에서 한 레이어안에 표현해줍니다
 with tf.name_scope('layer1'):
     W1 = tf.Variable(tf.random_uniform([2, 10], -1., 1.), name='W1')
-    L1 = tf.nn.relu(tf.matmul(X, W1), name='L1')
+    L1 = tf.nn.relu(tf.matmul(X, W1))
 
 with tf.name_scope('layer2'):
     W2 = tf.Variable(tf.random_uniform([10, 20], -1., 1.), name='W2')
-    L2 = tf.nn.relu(tf.matmul(L1, W2), name='L2')
+    L2 = tf.nn.relu(tf.matmul(L1, W2))
 
 with tf.name_scope('output'):
     W3 = tf.Variable(tf.random_uniform([20, 3], -1., 1.), name='W3')
