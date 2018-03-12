@@ -32,6 +32,8 @@ print(' - - - - - - - - - - - - - - -  - - - - -- - - -  --')
 PlaceX = sess.graph.get_tensor_by_name('PlaceX:0')
 x_data = np.array(
     [[0, 0], [1, 0], [1, 1], [0, 0], [0, 0], [0, 1]])
+x_data0 = x_data[1,:]
+x_data0 = np.array([x_data0])
 
 # ** Get Models and Insert prediction images
 print(' - - - -Activation Operations - - - - - - - - - - - - - - - - - -')
@@ -40,7 +42,7 @@ for op in operations:
     if op.name.endswith('Relu'):
         print('Op: ' + op.name)
         print(op.outputs)
-        print(sess.run(op.outputs, feed_dict={PlaceX:x_data}))
+        print(sess.run(op.outputs, feed_dict={PlaceX:x_data0}))
 
 print(' - - - - - - - - - - - - - - -  - - - - -- - - -  --')
 
