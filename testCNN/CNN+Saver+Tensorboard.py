@@ -79,16 +79,6 @@ else:
     sess.run(tf.global_variables_initializer())
 
 
-# 텐서보드에서 표시해주기 위한 텐서들을 수집합니다.
-merged = tf.summary.merge_all()
-# 저장할 그래프와 텐서값들을 저장할 디렉토리를 설정합니다.
-writer = tf.summary.FileWriter('./loggs', sess.graph)
-# 이렇게 저장한 로그는, 학습 후 다음의 명령어를 이용해 웹서버를 실행시킨 뒤
-# tensorboard --logdir=./logs
-# 다음 주소와 웹브라우저를 이용해 텐서보드에서 확인할 수 있습니다.
-# http://localhost:6006
-
-
 batch_size = 100
 total_batch = int(mnist.train.num_examples / batch_size)
 
@@ -104,9 +94,6 @@ for epoch in range(1):
                                feed_dict={X: batch_xs,
                                           Y: batch_ys,
                                           keep_prob: 0.7})
-        # 적절한 시점에 저장할 값들을 수집하고 저장합니다j
-        summary = sess.run(merged, feed_dict={X: batch_xs, Y: batch_ys, keep_prob:0.7})
-        writer.add_summary(summary, global_step=sess.run(global_step))
         total_cost += cost_val
 
     print('Epoch:', '%04d' % (epoch + 1),
