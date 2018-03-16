@@ -82,7 +82,7 @@ else:
 # 텐서보드에서 표시해주기 위한 텐서들을 수집합니다.
 merged = tf.summary.merge_all()
 # 저장할 그래프와 텐서값들을 저장할 디렉토리를 설정합니다.
-writer = tf.summary.FileWriter('./logs', sess.graph)
+writer = tf.summary.FileWriter('./loggs', sess.graph)
 # 이렇게 저장한 로그는, 학습 후 다음의 명령어를 이용해 웹서버를 실행시킨 뒤
 # tensorboard --logdir=./logs
 # 다음 주소와 웹브라우저를 이용해 텐서보드에서 확인할 수 있습니다.

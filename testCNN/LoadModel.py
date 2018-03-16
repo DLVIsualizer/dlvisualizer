@@ -58,6 +58,7 @@ for i in range(act_ops.__len__()-1):
             subplot.set_xticks([])
             subplot.set_yticks([])
             imageK = image[0][:,:,:,k]
+            print(imageK.shape)
             subplot.imshow(imageK[0])
             # print(imageK)
 
