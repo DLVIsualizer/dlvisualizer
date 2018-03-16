@@ -5,9 +5,27 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 mnist = input_data.read_data_sets("./mnist/data/", one_hot=True)
 
-# ** First let's load meta graph and restore weights
+# Load Model & Tensors(PlaceHolder)
 sess=tf.Session()
-tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.TRAINING], './SavedModel/')
+signature_key = tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY
+input_key = 'x_input'
+keep_prob_key = 'keep_prob'
+output_key = 'y_output'
+
+export_path =  './savedmodel'
+meta_graph_def = tf.saved_model.loader.load(
+           sess,
+          [tf.saved_model.tag_constants.SERVING],
+          export_path)
+signature = meta_graph_def.signature_def
+
+x_tensor_name = signature[signature_key].inputs[input_key].name
+keep_prob_tensor_name = signature[signature_key].inputs[keep_prob_key].name
+y_tensor_name = signature[signature_key].outputs[output_key].name
+
+X = sess.graph.get_tensor_by_name(x_tensor_name)
+KeepProb = sess.graph.get_tensor_by_name(keep_prob_tensor_name)
+Y = sess.graph.get_tensor_by_name(y_tensor_name)
 
 # ** Get Variables
 print(sess.graph.collections)
@@ -24,11 +42,6 @@ for v in all_vars:
     # print(sess.run(v))
 print(' - - - - - - - - - - - - - - -  - - - - -- - - -  --')
 
-
-# ** Tmp input data
-PlaceX = sess.graph.get_tensor_by_name('PlaceX:0')
-keep_prob= sess.graph.get_tensor_by_name('KeepProb:0')
-
 # Prepare pyplot
 fig = plt.figure(figsize=(64,3))
 
@@ -44,7 +57,8 @@ for i in range(act_ops.__len__()-1):
         op = act_ops[i]
         print('Op: ' + op.name)
         # print(op.outputs)
-        image = sess.run(op.outputs, feed_dict={PlaceX:mnist.test.images[0].reshape(-1, 28, 28, 1),keep_prob:1.0})
+        image = sess.run(op.outputs,
+                         feed_dict={X:mnist.test.images[0].reshape(-1, 28, 28, 1),KeepProb:1.0})
 
         num_of_filters = image[0].shape[3]
 
@@ -57,7 +71,6 @@ for i in range(act_ops.__len__()-1):
             # print(imageK)
 
 plt.show()
-
 
 print(' - - - - - - - - - - - - - - -  - - - - -- - - -  --')
 

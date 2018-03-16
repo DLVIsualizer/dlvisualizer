@@ -5,14 +5,15 @@ from tensorflow.examples.tutorials.mnist import input_data
 
 mnist = input_data.read_data_sets("./mnist/data/", one_hot=True)
 
+print(' Caution !!: Delete "savedmodel" folder then continue')
 #########
 # 신경망 모델 구성
 ######
 # 기존 모델에서는 입력 값을 28x28 하나의 차원으로 구성하였으나,
 # CNN 모델을 사용하기 위해 2차원 평면과 특성치의 형태를 갖는 구조로 만듭니다.
-X = tf.placeholder(tf.float32, [None, 28, 28, 1],name='PlaceX')
+X = tf.placeholder(tf.float32, [None, 28, 28, 1])
 Y = tf.placeholder(tf.float32, [None, 10])
-keep_prob = tf.placeholder(tf.float32,name='KeepProb')
+keep_prob = tf.placeholder(tf.float32)
 
 global_step = tf.Variable(0,trainable=False, name='global_step')
 
@@ -70,12 +71,7 @@ init = tf.global_variables_initializer()
 sess = tf.Session()
 sess.run(init)
 
-# Create a builder
-builder = tf.saved_model.builder.SavedModelBuilder('./SavedModel/')
-builder.add_meta_graph_and_variables(sess,
-                                     [tf.saved_model.tag_constants.TRAINING],
-                                     signature_def_map=None,
-                                     assets_collection=None)
+
 
 
 batch_size = 100
@@ -97,7 +93,6 @@ for epoch in range(1):
     print('Epoch:', '%04d' % (epoch + 1),
           'Avg. cost =', '{:.3f}'.format(total_cost / total_batch))
 
-builder.save()
 print('최적화 완료!')
 
 #########
@@ -109,3 +104,25 @@ print('정확도:', sess.run(accuracy,
                        feed_dict={X: mnist.test.images.reshape(-1, 28, 28, 1),
                                   Y: mnist.test.labels,
                                   keep_prob: 1}))
+# Save the model
+export_path =  './savedmodel'
+builder = tf.saved_model.builder.SavedModelBuilder(export_path)
+
+tensor_info_x = tf.saved_model.utils.build_tensor_info(X)
+tensor_info_keep_prob = tf.saved_model.utils.build_tensor_info(keep_prob)
+tensor_info_y = tf.saved_model.utils.build_tensor_info(Y)
+
+prediction_signature = (
+  tf.saved_model.signature_def_utils.build_signature_def(
+      inputs={'x_input': tensor_info_x,'keep_prob':tensor_info_keep_prob},
+      outputs={'y_output': tensor_info_y},
+      method_name=tf.saved_model.signature_constants.PREDICT_METHOD_NAME))
+
+builder.add_meta_graph_and_variables(
+  sess, [tf.saved_model.tag_constants.SERVING],
+  signature_def_map={
+      tf.saved_model.signature_constants.DEFAULT_SERVING_SIGNATURE_DEF_KEY:
+          prediction_signature
+  },
+  )
+builder.save()
