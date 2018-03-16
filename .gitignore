@@ -4,6 +4,8 @@
 *.sw*
 test/model/**
 test/logs/**
+testCNN/logs/**
+testCNN/model/**
 
 
 # expetion #
@@ -13,6 +15,10 @@ test/logs/**
 !test/model/dnn.ckpt-100.data-00000-of-00001
 !test/model/dnn.ckpt-100.index
 !test/model/dnn.ckpt-100.meta
+!testCNN/model/checkpoint
+!testCNN/model/dnn.ckpt-0.data-00000-of-00001
+!testCNN/model/dnn.ckpt-0.index
+!testCNN/model/dnn.ckpt-0.meta
 
 
 # Intellij

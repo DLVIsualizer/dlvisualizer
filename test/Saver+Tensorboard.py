@@ -71,7 +71,7 @@ for step in range(100):
     print('Step: %d, ' % sess.run(global_step),
           'Cost: %.3f' % sess.run(cost, feed_dict={X: x_data, Y: y_data}))
 
-    # 적절한 시점에 저장할 값들을 수집하고 저장합니다.
+    # 적절한 시점에 저장할 값들을 수집하고 저장합니다j
     summary = sess.run(merged, feed_dict={X: x_data, Y: y_data})
     writer.add_summary(summary, global_step=sess.run(global_step))
 
