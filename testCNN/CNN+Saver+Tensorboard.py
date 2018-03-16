@@ -57,11 +57,12 @@ with tf.name_scope('full2'):
 
 with tf.name_scope('optimizer'):
     cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=model, labels=Y))
-    optimizer = tf.train.AdamOptimizer(0.001).minimize(cost)
+    optimizer = tf.train.AdamOptimizer(0.001).minimize(cost,global_step=global_step)
     # 최적화 함수를 RMSPropOptimizer 로 바꿔서 결과를 확인해봅시다.
     # optimizer = tf.train.RMSPropOptimizer(0.001, 0.9).minimize(cost)
 
-    tf.summary.scalar('cost',cost)
+    # tf.summary.scalar 를 이용해 수집하고 싶은 값들을 지정할 수 있습니다.
+    tf.summary.scalar('cost', cost)
 
 #########
 # 신경망 모델 학습
@@ -78,6 +79,14 @@ if ckpt and tf.train.checkpoint_exists(ckpt.model_checkpoint_path):
 else:
     sess.run(tf.global_variables_initializer())
 
+# 텐서보드에서 표시해주기 위한 텐서들을 수집합니다.
+merged = tf.summary.merge_all()
+# 저장할 그래프와 텐서값들을 저장할 디렉토리를 설정합니다.
+writer = tf.summary.FileWriter('./logs', sess.graph)
+# 이렇게 저장한 로그는, 학습 후 다음의 명령어를 이용해 웹서버를 실행시킨 뒤
+# tensorboard --logdir=./logs
+# 다음 주소와 웹브라우저를 이용해 텐서보드에서 확인할 수 있습니다.
+# http://localhost:6006
 
 batch_size = 100
 total_batch = int(mnist.train.num_examples / batch_size)
@@ -95,6 +104,9 @@ for epoch in range(1):
                                           Y: batch_ys,
                                           keep_prob: 0.7})
         total_cost += cost_val
+        # 적절한 시점에 저장할 값들을 수집하고 저장합니다
+        summary = sess.run(merged, feed_dict={X: batch_xs, keep_prob:0.7, Y: batch_ys})
+        writer.add_summary(summary, global_step=sess.run(global_step))
 
     print('Epoch:', '%04d' % (epoch + 1),
           'Avg. cost =', '{:.3f}'.format(total_cost / total_batch))

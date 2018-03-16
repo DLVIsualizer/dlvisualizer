@@ -72,8 +72,6 @@ sess = tf.Session()
 sess.run(init)
 
 
-
-
 batch_size = 100
 total_batch = int(mnist.train.num_examples / batch_size)
 

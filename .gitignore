@@ -5,12 +5,12 @@
 test/model/**
 test/logs/**
 testCNN/logs/**
-testCNN/model/**
+testCNN/model/**
 
 
 # expetion #
 !test/logs/events.out.tfevents.1520570337.DESKTOP-3EADSJ9
-!testCNN/logs/events.out.tfevents.1520576549.DESKTOP-3EADSJ9
+!testCNN/logs/events.out.tfevents.1521197954.DESKTOP-ATITBUH
 !test/model/checkpoint
 !test/model/dnn.ckpt-100.data-00000-of-00001
 !test/model/dnn.ckpt-100.index
