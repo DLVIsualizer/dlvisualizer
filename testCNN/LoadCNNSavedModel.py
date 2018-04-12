@@ -65,7 +65,7 @@ for op in operations:
         fetches[op.name] = op.outputs
 
 image = sess.run(fetches, feed_dict=feed_dict)
-print(image)
+# print(image)
 
 i = 0
 for layerName in layerNames:
@@ -81,6 +81,8 @@ for layerName in layerNames:
         subplot.set_yticks([])
         imageK = imageI[0][:,:,:,k]
         subplot.imshow(imageK[0])
+        print(">>>",i,"layer, ", k,"filter")
+        print(imageK)
 
     i+= 1
 
