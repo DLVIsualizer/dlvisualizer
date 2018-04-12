@@ -28,17 +28,16 @@ KeepProb = sess.graph.get_tensor_by_name(keep_prob_tensor_name)
 Y = sess.graph.get_tensor_by_name(y_tensor_name)
 
 # ** Get Variables
-print(sess.graph.collections)
 print(' - - - -trainable_variables- - - - - - - - - - - - -')
 all_vars = sess.graph.get_collection('trainable_variables')
-for v in all_vars:
-    print(v.name)
-    print(sess.run(v))
+# for v in all_vars:
+#     print(v.name)
+#     print(sess.run(v))
 print(' - - - - - - - - - - - - - - -  - - - --  - -')
 print(' - - - -train_op- - - - - - - - - - - - - - - - - -')
 all_vars = sess.graph.get_collection('train_op')
-for v in all_vars:
-    print(v.name)
+# for v in all_vars:
+#     print(v.name)
     # print(sess.run(v))
 print(' - - - - - - - - - - - - - - -  - - - - -- - - -  --')
 
@@ -48,27 +47,42 @@ fig = plt.figure(figsize=(64,3))
 # ** Get Models and Insert prediction images
 print(' - - - -Activation Operations - - - - - - - - - - - - - - - - - -')
 operations = sess.graph.get_operations()
-act_ops = []
+
+# Dictionary of network operations (activations) to fetch
+fetches = {}
+
+# Manual inputs using placeholder 'images' of shape [N,H,W,C]
+feed_dict ={}
+feed_dict[X] = mnist.test.images[0].reshape(-1,28,28,1)
+feed_dict[KeepProb] = 1.0
+
+# Layer Names
+layerNames = []
+
 for op in operations:
     if op.name.endswith('Relu'):
-        act_ops += [op]
+        layerNames += [op.name]
+        fetches[op.name] = op.outputs
 
-for i in range(act_ops.__len__()-1):
-        op = act_ops[i]
-        print('Op: ' + op.name)
-        # print(op.outputs)
-        image = sess.run(op.outputs,
-                         feed_dict={X:mnist.test.images[0].reshape(-1, 28, 28, 1),KeepProb:1.0})
+image = sess.run(fetches, feed_dict=feed_dict)
+print(image)
 
-        num_of_filters = image[0].shape[3]
+i = 0
+for layerName in layerNames:
+    if(i == 2):
+        break
 
-        for k in range(num_of_filters):
-            subplot = fig.add_subplot(act_ops.__len__(), 64, 64*i+k+1)
-            subplot.set_xticks([])
-            subplot.set_yticks([])
-            imageK = image[0][:,:,:,k]
-            subplot.imshow(imageK[0])
-            # print(imageK)
+    imageI = image[layerName]
+    num_of_filters = imageI[0].shape[3]
+
+    for k in range(num_of_filters):
+        subplot = fig.add_subplot(image.__len__(), 64, 64*i+k+1)
+        subplot.set_xticks([])
+        subplot.set_yticks([])
+        imageK = imageI[0][:,:,:,k]
+        subplot.imshow(imageK[0])
+
+    i+= 1
 
 plt.show()
 
